@@ -1,0 +1,4080 @@
+{
+	"info": {
+		"_postman_id": "26868945-386e7cc0-5683-4469-9090-ba668316be00",
+		"name": "API Challenger: Test Runner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST Get X-Challenger",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "deec7558-765b-46d1-b4c6-fc92c80d483a",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"X-Challenger is present\", function () {",
+							"    pm.response.to.have.header(\"X-Challenger\");",
+							"});",
+							"",
+							"pm.collectionVariables.set(\"XChallenger\", pm.response.headers.get(\"X-Challenger\"));",
+							"console.log(\"CollectionVariable: %s\", pm.collectionVariables.get(\"XChallenger\"));",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "03ce247f-c55b-4a23-9ff1-1da66e4efb73",
+						"exec": [
+							"/*console.log(\"PRE ASSIGN Pre-Collection script\");",
+							"pm.collectionVariables.set(\"prevXChallenger\", pm.collectionVariables.get(\"XChallenger\"));",
+							"console.log(\"AFTER ASSIGN Pre-Collection script\");*/"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-bc8c5323-313d-40b7-8283-b8c3c989449e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/challenger",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Challenges",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a430a2c5-695a-4eaf-8ebf-4a25bece896a",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has required fields in challenges\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.challenges).to.be.an('array').that.is.not.empty;",
+							"",
+							"    responseData.challenges.forEach(function(challenge) {",
+							"        pm.expect(challenge).to.have.all.keys('id', 'name', 'description', 'status');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Status should be a boolean value\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    responseData.challenges.forEach(function(challenge) {",
+							"        pm.expect(challenge.status).to.be.a('boolean');",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-15f4eb80-8ccd-4471-bbbb-e72c85818866",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/challenges",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d631632-c676-4c82-8837-1ddb388c0312",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has required fields in todos\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.todos).to.be.an('array').that.is.not.empty;",
+							"",
+							"    responseData.todos.forEach(function(todo) {",
+							"        pm.expect(todo).to.have.all.keys('id', 'title', 'doneStatus', 'description');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"DoneStatus should be a boolean value\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    responseData.todos.forEach(function(todo) {",
+							"        pm.expect(todo.doneStatus).to.be.a('boolean');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Id should be a positive number\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    responseData.todos.forEach(function(todo) {",
+							"        pm.expect(todo.id).to.be.a('number');",
+							"        pm.expect(todo.id).to.be.above(0);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Title should be string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    responseData.todos.forEach(function(todo) {",
+							"        pm.expect(todo.title).to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-39b3153f-fbf9-41cb-a3b9-49f74d3eb43c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee2e54c5-8695-480a-adfb-7887a15511a5",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-b5568cf1-0f17-48b4-8f36-f84de7515b30",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todo?X-Challenger={{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo"
+					],
+					"query": [
+						{
+							"key": "X-Challenger",
+							"value": "{{XChallenger}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/todos/validId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1890fd28-115d-40c9-9ac3-8c2eb4ad916b",
+						"exec": [
+							"const reqUrl = pm.environment.get('url') + \"/todos\";",
+							"const idArray = [];",
+							"var todoCount = 0;",
+							"",
+							"try {",
+							"    console.log(\"Api Challenger\");",
+							"    const response = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"X-Challenger\": pm.collectionVariables.get(\"X-Challenger\")",
+							"        } ",
+							"    });",
+							"    //console.log(response.json());",
+							"    const responseData = response.json();",
+							"    responseData.todos.forEach(function (todo) {",
+							"        idArray.push(todo.id);",
+							"        todoCount++;",
+							"    });",
+							"",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							"//TODO: remember to update responseIds when adding new TODO to db",
+							"pm.collectionVariables.set(\"responseIds\", JSON.stringify(idArray));",
+							"console.log(\"Todo Count:\", todoCount)",
+							"pm.collectionVariables.set(\"numberOfTodos\", todoCount);",
+							"",
+							"const randomId = idArray[Math.floor(Math.random() * idArray.length)];",
+							"pm.collectionVariables.set(\"validId\", randomId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f3b4011-6e44-4c65-95be-33042f855f8c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is below 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains only one todo\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('todos').that.is.an('array').with.lengthOf(1);",
+							"});",
+							"",
+							"pm.test(\"Response Todo Id is as expected\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.todos[0].id).to.eql(pm.collectionVariables.get(\"validId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-5faedae8-f412-4e7f-99c0-a93a700eaf2f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/todos/invalidId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1497e700-bc79-4da9-be87-644222433059",
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});",
+							"",
+							"pm.test(\"Response error message is valid\", function () {",
+							"    pm.expect(pm.response.text()).to.not.be.empty;",
+							"    pm.expect(pm.response.text()).to.include(\"Could not find an instance with\");",
+							"    pm.expect(pm.response.text()).to.include(pm.collectionVariables.get(\"noId\"));",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b4f0624-f4ac-4892-9fd3-09ab80c60626",
+						"exec": [
+							"let idArray = pm.collectionVariables.get(\"responseIds\").replaceAll(\"[\",\"\").replaceAll(\"]\",\"\").split(\",\"); // Remove [] and Convert string to array",
+							"console.log(\"idArray Before: \" + idArray);",
+							"idArray = idArray.map(Number); // map string to numbers",
+							"console.log(\"idArray After: \" + idArray); // Log the array to the console",
+							"let nonExisting;",
+							"do {",
+							"  nonExisting = Math.floor(Math.random() * 100) + 1; // range 1–10",
+							"  console.log(\"Non Existiong while: \",nonExisting)",
+							"} while (idArray.includes(nonExisting));",
+							"",
+							"console.log(\"nonExisting: \" + nonExisting); // Log the non-existing ID to the console",
+							"pm.collectionVariables.set(\"noId\", nonExisting)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-9c69182f-934f-43ec-8b20-dacb17a04e8c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos/{{noId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{noId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/todos?doneStatus=false",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1497e700-bc79-4da9-be87-644222433059",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () { ",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"pm.test(\"Response contains only doneStatus: false\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    jsonData.todos.forEach(function(todo) {",
+							"        pm.expect(todo.doneStatus).to.be.false;",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b4f0624-f4ac-4892-9fd3-09ab80c60626",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-2abf7e46-26c0-4b84-b44f-10cd413f4897",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos?doneStatus=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					],
+					"query": [
+						{
+							"key": "doneStatus",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/todos?doneStatus=true",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1497e700-bc79-4da9-be87-644222433059",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () { ",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"pm.test(\"Response contains only doneStatus: done\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.todos).to.be.an('array').that.is.not.empty;",
+							"    jsonData.todos.forEach(function(todo) {",
+							"        pm.expect(todo.doneStatus).to.be.true;",
+							"    });",
+							"});",
+							"",
+							"//delete TODO that was created for testing",
+							"var jsonData = pm.response.json();",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url\") + \"/todos/\" + jsonData.todos[0].id,",
+							"    method: \"DELETE\",",
+							"    header: {",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"}, function (err, responseDelete) {",
+							"    pm.test(\"Delete request status code is 200\", function () {",
+							"        pm.expect(responseDelete).to.have.status(200);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b4f0624-f4ac-4892-9fd3-09ab80c60626",
+						"exec": [
+							"const reqUrl = pm.environment.get('url') + \"/todos\";",
+							"",
+							"try {",
+							"    //add TODO with doneStatus: true",
+							"    const response = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"POST\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\", ",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        },",
+							"        body: { ",
+							"            mode: \"raw\",",
+							"            raw: JSON.stringify({   ",
+							"                \"title\": \"Test Todo\",   ",
+							"                \"doneStatus\": true, ",
+							"                \"description\": \"Test Description\"    ",
+							"            })",
+							"        } ",
+							"    });",
+							"",
+							"    console.log(response.json());",
+							"",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-645eb98a-9489-4351-8fa0-88cac98a54ff",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos?doneStatus=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					],
+					"query": [
+						{
+							"key": "doneStatus",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Todos with ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a0ef5553-fa31-4326-a3ed-e4847799453b",
+						"exec": [
+							"const reqUrl = pm.environment.get('url') + \"/todos\";",
+							"",
+							"try {",
+							"    //add TODO wthat will be deleted",
+							"    const response = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"POST\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\", ",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        },",
+							"        body: { ",
+							"            mode: \"raw\",",
+							"            raw: JSON.stringify({   ",
+							"                \"title\": \"Delete me Todo\",   ",
+							"                \"doneStatus\": true, ",
+							"                \"description\": \"Test Description\"    ",
+							"            })",
+							"        } ",
+							"    });",
+							"",
+							"    console.log(response.json());",
+							"    console.log(response.json().id)",
+							"",
+							"    pm.variables.set(\"id\", response.json().id);",
+							"    ",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f392a7fc-7acb-4117-b6c2-ad276e45ca70",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"try {",
+							"    console.log(\"X-Challenger:\", pm.collectionVariables.get(\"XChallenger\"));",
+							"    const response = await pm.sendRequest({",
+							"        url: pm.environment.get(\"url\") + \"/todos/\" + pm.variables.get(\"id\"),",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\", ",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"",
+							"    pm.test(\"Todo should not exist after deletion\", function () {",
+							"        pm.expect(response.json()).to.have.property(\"errorMessages\");",
+							"    });",
+							"    ",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-511b9a6a-10ff-4508-9ae7-1b24984c03a3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos/{{id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{id}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"type": "text",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Todos with ID No SCRIPT",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a0ef5553-fa31-4326-a3ed-e4847799453b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f392a7fc-7acb-4117-b6c2-ad276e45ca70",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-3ee9c0a5-31ee-4e0f-a607-ad011d7b2dbb",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos/19",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"19"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"type": "text",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "14e058da-a981-4cd6-91b0-c66316c7bbe5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains only headers and status code\", function () {",
+							"    const responseBody = pm.response.text();",
+							"    pm.expect(responseBody).to.be.empty; // Check if body is empty",
+							"    pm.expect(pm.response.headers.count()).to.be.greaterThan(0); // Ensure there are headers present",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-77a75f07-020f-4b1a-82c5-1d1e2930053c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "HEAD",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo: doneStatus should be boolean",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e6fcfcf-ffb5-4243-bfb2-25a824649ff1",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response body contains error message\", function () {   ",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation\");",
+							"});",
+							"",
+							"pm.test(\"Response body contains specific error message\", function () {      ",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation: doneStatus should be BOOLEAN but was STRING\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-f3bf8dab-9fcf-4b80-bb1f-5bddbf7d4846",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"DoneStatus Fail\",   \n    \"doneStatus\": \"invalid Status\", \n    \"description\": \"Description for doneStatusFail\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Crete Todo: Title to long",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "67cc104e-fc2c-417d-b97d-77e728a5db15",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () { ",
+							"    pm.response.to.have.status(400);  ",
+							"});",
+							"",
+							"pm.test(\"Response body contains Field Validation error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation\");",
+							"});",
+							"",
+							"pm.test(\"Response body contains specific error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation: Maximum allowable length exceeded for title - maximum allowed is 50\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-771b9eae-ae63-45a1-b282-07f54d819dd0",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Issue a POST request to create a todo but fail leng\",   \n    \"doneStatus\": false, \n    \"description\": \"Description for TitleFail\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo: Title Empty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "67cc104e-fc2c-417d-b97d-77e728a5db15",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () { ",
+							"    pm.response.to.have.status(400);  ",
+							"});",
+							"",
+							"pm.test(\"Response body contains Field Validation error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation\");",
+							"});",
+							"",
+							"pm.test(\"Response body contains specific error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation: title : can not be empty\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-0f9a87ce-6c32-4a51-a0e7-9b85f5499c55",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \" \",   \n    \"doneStatus\": false, \n    \"description\": \"Description for TitleFail\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo: Description too long",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9b8af8d-a6f3-4a16-9673-b048a5b28b89",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () { ",
+							"    pm.response.to.have.status(400);  ",
+							"});",
+							"",
+							"pm.test(\"Response body contains Field Validation error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation\");",
+							"});",
+							"",
+							"pm.test(\"Response body contains specific error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Failed Validation: Maximum allowable length exceeded for description - maximum allowed is 200\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-d412b221-6d65-4fbb-90b5-74e00b7fe8d6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test Title\",   \n    \"doneStatus\": false, \n    \"description\": \"Issue a POST request to create a todo but fail length validation on the `description` because your description exceeds maximum allowable characters. Issue a POST request to create a todo but fail lengt\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo with max out content title and description",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f0c043d-5021-47a4-bbe8-da9c8b9ceb1f",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"try {",
+							"    const responseDelete = await pm.sendRequest({",
+							"        url: pm.environment.get(\"url\") + \"/todos/\" + pm.response.json().id,",
+							"        method: \"DELETE\",",
+							"        header: {",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"    pm.test(\"Added todo is deleted successfully\", function () {",
+							"        pm.expect(responseDelete).to.have.status(200);",
+							"    });",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-4dbeb5eb-965e-4a28-9f29-c2f017d1c4f5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"2*4*6*8*11*14*17*20*23*26*29*32*35*38*41*44*47*50*\",   \n    \"doneStatus\": false, \n    \"description\": \"*3*5*7*9*12*15*18*21*24*27*30*33*36*39*42*45*48*51*54*57*60*63*66*69*72*75*78*81*84*87*90*93*96*100*104*108*112*116*120*124*128*132*136*140*144*148*152*156*160*164*168*172*176*180*184*188*192*196*200*\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo: content too long",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3cdaa81e-6f0e-4fcb-8e19-ef5b7b9cff53",
+						"exec": [
+							"pm.test(\"Status code is 413\", function () {",
+							"    pm.response.to.have.status(413);",
+							"});",
+							"",
+							"pm.test(\"Response contains valid error\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Error: Request body too large, max allowed is 5000 bytes\");",
+							"});",
+							"",
+							"pm.test(\"Response body contains errorMessages\", function () {",
+							"    var jsonData = pm.response.json(); // need to parse the response body to JSON",
+							"    pm.expect(jsonData.errorMessages).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1a34107c-4b61-457c-8b55-1490ef07f06d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"*3*5*7*9*12*15*18*21*24*27*30*33*36*39*42*45*48*51*54*57*60*63*66*69*72*75*78*81*84*87*90*93*96*99*103*107*111*115*119*123*127*131*135*139*143*147*151*155*159*163*167*171*175*179*183*187*191*195*199*203*207*211*215*219*223*227*231*235*239*243*247*251*255*259*263*267*271*275*279*283*287*291*295*299*303*307*311*315*319*323*327*331*335*339*343*347*351*355*359*363*367*371*375*379*383*387*391*395*399*403*407*411*415*419*423*427*431*435*439*443*447*451*455*459*463*467*471*475*479*483*487*491*495*499*503*507*511*515*519*523*527*531*535*539*543*547*551*555*559*563*567*571*575*579*583*587*591*595*599*603*607*611*615*619*623*627*631*635*639*643*647*651*655*659*663*667*671*675*679*683*687*691*695*699*703*707*711*715*719*723*727*731*735*739*743*747*751*755*759*763*767*771*775*779*783*787*791*795*799*803*807*811*815*819*823*827*831*835*839*843*847*851*855*859*863*867*871*875*879*883*887*891*895*899*903*907*911*915*919*923*927*931*935*939*943*947*951*955*959*963*967*971*975*979*983*987*991*995*1000*1005*1010*1015*1020*1025*1030*1035*1040*1045*1050*1055*1060*1065*1070*1075*1080*1085*1090*1095*1100*1105*1110*1115*1120*1125*1130*1135*1140*1145*1150*1155*1160*1165*1170*1175*1180*1185*1190*1195*1200*1205*1210*1215*1220*1225*1230*1235*1240*1245*1250*1255*1260*1265*1270*1275*1280*1285*1290*1295*1300*1305*1310*1315*1320*1325*1330*1335*1340*1345*1350*1355*1360*1365*1370*1375*1380*1385*1390*1395*1400*1405*1410*1415*1420*1425*1430*1435*1440*1445*1450*1455*1460*1465*1470*1475*1480*1485*1490*1495*1500*1505*1510*1515*1520*1525*1530*1535*1540*1545*1550*1555*1560*1565*1570*1575*1580*1585*1590*1595*1600*1605*1610*1615*1620*1625*1630*1635*1640*1645*1650*1655*1660*1665*1670*1675*1680*1685*1690*1695*1700*1705*1710*1715*1720*1725*1730*1735*1740*1745*1750*1755*1760*1765*1770*1775*1780*1785*1790*1795*1800*1805*1810*1815*1820*1825*1830*1835*1840*1845*1850*1855*1860*1865*1870*1875*1880*1885*1890*1895*1900*1905*1910*1915*1920*1925*1930*1935*1940*1945*1950*1955*1960*1965*1970*1975*1980*1985*1990*1995*2000*\",   \n    \"doneStatus\": false, \n    \"description\": \"*3*5*7*9*12*15*18*21*24*27*30*33*36*39*42*45*48*51*54*57*60*63*66*69*72*75*78*81*84*87*90*93*96*99*103*107*111*115*119*123*127*131*135*139*143*147*151*155*159*163*167*171*175*179*183*187*191*195*199*203*207*211*215*219*223*227*231*235*239*243*247*251*255*259*263*267*271*275*279*283*287*291*295*299*303*307*311*315*319*323*327*331*335*339*343*347*351*355*359*363*367*371*375*379*383*387*391*395*399*403*407*411*415*419*423*427*431*435*439*443*447*451*455*459*463*467*471*475*479*483*487*491*495*499*503*507*511*515*519*523*527*531*535*539*543*547*551*555*559*563*567*571*575*579*583*587*591*595*599*603*607*611*615*619*623*627*631*635*639*643*647*651*655*659*663*667*671*675*679*683*687*691*695*699*703*707*711*715*719*723*727*731*735*739*743*747*751*755*759*763*767*771*775*779*783*787*791*795*799*803*807*811*815*819*823*827*831*835*839*843*847*851*855*859*863*867*871*875*879*883*887*891*895*899*903*907*911*915*919*923*927*931*935*939*943*947*951*955*959*963*967*971*975*979*983*987*991*995*1000*1005*1010*1015*1020*1025*1030*1035*1040*1045*1050*1055*1060*1065*1070*1075*1080*1085*1090*1095*1100*1105*1110*1115*1120*1125*1130*1135*1140*1145*1150*1155*1160*1165*1170*1175*1180*1185*1190*1195*1200*1205*1210*1215*1220*1225*1230*1235*1240*1245*1250*1255*1260*1265*1270*1275*1280*1285*1290*1295*1300*1305*1310*1315*1320*1325*1330*1335*1340*1345*1350*1355*1360*1365*1370*1375*1380*1385*1390*1395*1400*1405*1410*1415*1420*1425*1430*1435*1440*1445*1450*1455*1460*1465*1470*1475*1480*1485*1490*1495*1500*1505*1510*1515*1520*1525*1530*1535*1540*1545*1550*1555*1560*1565*1570*1575*1580*1585*1590*1595*1600*1605*1610*1615*1620*1625*1630*1635*1640*1645*1650*1655*1660*1665*1670*1675*1680*1685*1690*1695*1700*1705*1710*1715*1720*1725*1730*1735*1740*1745*1750*1755*1760*1765*1770*1775*1780*1785*1790*1795*1800*1805*1810*1815*1820*1825*1830*1835*1840*1845*1850*1855*1860*1865*1870*1875*1880*1885*1890*1895*1900*1905*1910*1915*1920*1925*1930*1935*1940*1945*1950*1955*1960*1965*1970*1975*1980*1985*1990*1995*2000*2005*2010*2015*2020*2025*2030*2035*2040*2045*2050*2055*2060*2065*2070*2075*2080*2085*2090*2095*2100*2105*2110*2115*2120*2125*2130*2135*2140*2145*2150*2155*2160*2165*2170*2175*2180*2185*2190*2195*2200*2205*2210*2215*2220*2225*2230*2235*2240*2245*2250*2255*2260*2265*2270*2275*2280*2285*2290*2295*2300*2305*2310*2315*2320*2325*2330*2335*2340*2345*2350*2355*2360*2365*2370*2375*2380*2385*2390*2395*2400*2405*2410*2415*2420*2425*2430*2435*2440*2445*2450*2455*2460*2465*2470*2475*2480*2485*2490*2495*2500*2505*2510*2515*2520*2525*2530*2535*2540*2545*2550*2555*2560*2565*2570*2575*2580*2585*2590*2595*2600*2605*2610*2615*2620*2625*2630*2635*2640*2645*2650*2655*2660*2665*2670*2675*2680*2685*2690*2695*2700*2705*2710*2715*2720*2725*2730*2735*2740*2745*2750*2755*2760*2765*2770*2775*2780*2785*2790*2795*2800*2805*2810*2815*2820*2825*2830*2835*2840*2845*2850*2855*2860*2865*2870*2875*2880*2885*2890*2895*2900*2905*2910*2915*2920*2925*2930*2935*2940*2945*2950*2955*2960*2965*2970*2975*2980*2985*2990*2995*3000*\" \n}"
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Create Todo: Field not valid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b929caa3-cc54-473f-911d-d1d1c3b85dc3",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response body contains required error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Could not find field:\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-859b8dbe-eca1-40b6-9d3e-341dff03ba94",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Regular Title\",   \n    \"doneStatus\": false, \n    \"description\": \"Regular Description\",\n    \"WTFiled\": \"WTF Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Create Todo with invalid Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "382a5389-bc99-4b50-a56b-2291b38137f4",
+						"exec": [
+							"pm.test(\"Status code is 400\", function() {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Body contains error message\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"errorMessages\");",
+							"});",
+							"",
+							"pm.test(\"Body contains expected error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Cannot create todo with PUT due to Auto fields id\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "36770bd3-bb2d-47c6-b607-9afd7cfb760a",
+						"exec": [
+							"const reqUrl = pm.environment.get('url') + \"/todos\";",
+							"const idArray = [];",
+							"var todoCount = 0;",
+							"",
+							"try {",
+							"    console.log(\"Api Challenger\");",
+							"    const response = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"X-Challenger\": pm.collectionVariables.get(\"X-Challenger\")",
+							"        } ",
+							"    });",
+							"    //console.log(response.json());",
+							"    const responseData = response.json();",
+							"    responseData.todos.forEach(function (todo) {",
+							"        idArray.push(todo.id);",
+							"        todoCount++;",
+							"    });",
+							"",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							"//TODO: remember to update responseIds when adding new TODO to db",
+							"pm.collectionVariables.set(\"responseIds\", JSON.stringify(idArray));",
+							"console.log(\"Todo Count:\", todoCount)",
+							"pm.collectionVariables.set(\"numberOfTodos\", todoCount);",
+							"",
+							"const randomId = idArray[Math.floor(Math.random() * idArray.length)];",
+							"pm.collectionVariables.set(\"validId\", randomId);",
+							"",
+							"let nonExisting; // non-existing id for PUT request",
+							"do {",
+							"  nonExisting = Math.floor(Math.random() * 100) + 1; // range 1–10",
+							"} while (idArray.includes(nonExisting));",
+							"",
+							"pm.collectionVariables.set(\"noId\", nonExisting)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-e282268a-9ad2-4af9-b5bb-f3477a72aa18",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\n            \"title\": \"learn API testng\",\n            \"doneStatus\": false,\n            \"description\": \"learn by doing\"\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{noId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{noId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Update Existing Todo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c66f8c81-1587-4f0a-8647-90ae0c0792f5",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3e78b710-0d28-42ae-8e13-054656a8cd52",
+						"exec": [
+							"pm.test(\"Status code should be 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response title shoould be 'Updated Todo Title'\", function () {",
+							"    pm.expect(pm.response.json().title).to.eql(\"Updated Todo Title\");",
+							"});",
+							"    ",
+							"try {",
+							"    const responseGet = await pm.sendRequest({",
+							"        url: pm.environment.get(\"url\") + \"/todos/\" + pm.collectionVariables.get(\"validId\"),",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"X-Challenger\": pm.collectionVariables.get(\"XChallenger\")",
+							"        }",
+							"    });",
+							"",
+							"    console.log(responseGet.json());",
+							"",
+							"    pm.test(\"GET updatedId Todo title should be updated\", function () {",
+							"        pm.expect(responseGet.json().todos[0].title).to.eql(\"Updated Todo Title\");",
+							"    });",
+							"",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-be3e4d70-7507-40aa-8f80-3b68850f7393",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Updated Todo Title\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Update Todo: non existing id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9549780-053d-4e61-a298-76c54b3bdf61",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Response body contains Error message\", function() {",
+							"    var jsonData = pm.response.json(); // need to parse the response body to JSON",
+							"    pm.expect(jsonData.errorMessages).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Response body contains valid error message\", function () {",
+							"    const noId = pm.collectionVariables.get(\"noId\");",
+							"    pm.expect(pm.response.text()).to.include(\"No such todo entity instance with id\");",
+							"    pm.expect(pm.response.text()).to.include(noId);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-79086911-99e3-4b30-a30c-884a08822b0c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Updated Todo Title for non existing Todo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{noId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{noId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Todo complete payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeba9320-3915-42c4-9c12-935bc7e8de72",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dba7aa52-1b98-4700-9b59-e40dfe505c3c",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code should be 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response title is updated\", function () {",
+							"    pm.expect(jsonData.title).to.eql(\"update Todo\");",
+							"});",
+							"",
+							"pm.test(\"Response description is updated\", function () {  ",
+							"    pm.expect(jsonData.description).to.eql(\"update Todo\"); ",
+							"});",
+							"",
+							"pm.test(\"Response doneStatus is updated\", function () {",
+							"    pm.expect(jsonData.doneStatus).to.be.true;",
+							"});",
+							"",
+							"pm.test(\"Response id matches request id\", function () {",
+							"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"validId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-7cbb16e9-d693-49de-8211-8e38d1e2421d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"update Todo\",\n    \"doneStatus\": true,\n    \"description\": \"update Todo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Todo partial payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeba9320-3915-42c4-9c12-935bc7e8de72",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dba7aa52-1b98-4700-9b59-e40dfe505c3c",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code should be 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response title is updated\", function () {",
+							"    pm.expect(jsonData.title).to.eql(\"Partial Update Todo\");",
+							"});",
+							"",
+							"// API works so that it sets empty description if nothing is sent",
+							"pm.test(\"Response description should be empty\", function () {  ",
+							"    pm.expect(jsonData.description).to.be.empty; ",
+							"});",
+							"",
+							"// API work so that doneStatus is set to false if nothing is sent",
+							"pm.test(\"Response doneStatus should be false\", function () {",
+							"    pm.expect(jsonData.doneStatus).to.be.false;",
+							"});",
+							"",
+							"pm.test(\"Response id matches request id\", function () {",
+							"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"validId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-65f1ff73-a9ee-4a88-af67-3d8dba34bbb4",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Partial Update Todo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Todo partial no title",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeba9320-3915-42c4-9c12-935bc7e8de72",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dba7aa52-1b98-4700-9b59-e40dfe505c3c",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code should be 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response body contains errorMessages\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Response body should contain the correct message\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.include(\"title : field is mandatory\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-aaceae50-53ef-4fbe-b63b-345dec490bd0",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"doneStatus\": true,\n    \"description\": \"Update Todo With Missing Title\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Todo complete payload Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeba9320-3915-42c4-9c12-935bc7e8de72",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dba7aa52-1b98-4700-9b59-e40dfe505c3c",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code should be 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response body contains errorMessages\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.be.an('array');",
+							"});",
+							"",
+							"// jsonData.errorMessages is an array, so .include() checks for an exact element, not a substring inside an element.",
+							"pm.test(\"Response body should contain the correct message\", function () {",
+							"    pm.expect(jsonData.errorMessages[0]).to.include(\"Can not amend id from\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-d8781a61-1d7f-4f09-a90a-ea49b16ec20f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": {{noId}},\n    \"title\": \"update Todo\",\n    \"doneStatus\": true,\n    \"description\": \"update Todo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos/{{validId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos",
+						"{{validId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "514d6861-b3e1-4f9a-9b21-0920e12dc509",
+						"exec": [
+							"pm.test(\"OPTIONS request should return 200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"OPTIONS request should include 'Allow' header\", function () {",
+							"    pm.response.to.have.header('Allow');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-fe2942d4-0b51-4de9-b2d2-882071a96813",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS Challenges",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "514d6861-b3e1-4f9a-9b21-0920e12dc509",
+						"exec": [
+							"pm.test(\"OPTIONS request should return 200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"OPTIONS request should include 'Allow' header\", function () {",
+							"    pm.response.to.have.header('Allow');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-0fda628c-33d5-4d40-bb1b-1392ddc2bd61",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "514d6861-b3e1-4f9a-9b21-0920e12dc509",
+						"exec": [
+							"pm.test(\"OPTIONS request should return 200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"OPTIONS request should include 'Allow' header\", function () {",
+							"    pm.response.to.have.header('Allow');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-30d4c982-c48c-4cd5-b404-fc1f9cecff95",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (200) XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is application/xml\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/xml\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-40f24fe8-e651-4207-bf90-1dc697938b7e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (200) JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-244256bd-44a8-40a3-a7d1-8ae044c4e452",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (200) ANY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-89d26fab-9061-4d8e-996e-a62155a24922",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (200) XML pref",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/xml\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-91d1d60d-243f-441d-8ab8-72d5faedb137",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml, application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (200) no Accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-bf0313e7-7eb8-4252-b7ff-aaf8d21c207d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /todos (406)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3d0caf51-f501-46bf-a92f-4dc49e917994",
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response contains  errorMessages\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Response contains expected error Message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Unrecognised Accept Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-2d47e2b9-6d81-4eb6-9b61-c92f60bb6b3e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/gzip",
+						"type": "text"
+					},
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2217ef5-0f73-4868-ad9d-17601de687f8",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response Content-Type is XML\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/xml\");",
+							"});",
+							"",
+							"pm.test(\"Response XML is not empty\", function () {",
+							"    const xml = pm.response.text();",
+							"    pm.expect(xml).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"Todo item created successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"<todo>\");",
+							"});",
+							"",
+							"const xml2js = require('xml2js');",
+							"",
+							"let xml = pm.response.text();",
+							"let id;",
+							"",
+							"xml2js.parseString(xml, { explicitArray: false }, (err, result) => {",
+							"    if (err) {",
+							"        console.error(\"Error parsing XML:\", err);",
+							"        pm.test(\"Response is valid XML\", () => pm.expect.fail(\"Invalid XML\"));",
+							"    } else {",
+							"        // `result` is a JS object you can work with",
+							"        console.log(\"Parsed XML:\", result);",
+							"        console.log(\"Posted TODO ID: \", result.todo.id)",
+							"        id = result.todo.id;",
+							"    };",
+							"});",
+							"",
+							"const reqUrl = pm.environment.get('url') + \"/todos/\" + id;",
+							"",
+							"try {",
+							"    const responseDelete = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"DELETE\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\",",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"",
+							"    console.log(responseDelete.json());",
+							"    ",
+							"    pm.test(\"Delete response code should be 200\", function () {",
+							"        pm.responseDelete.to.have.status(200);",
+							"    })",
+							"} catch (err) {",
+							"    //console.error(err);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-e201fae8-3c28-4a38-af66-0ce143b2bb45",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<todo>\n    <doneStatus>false</doneStatus>\n    <description/>\n    <title>new item</title>\n</todo>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e4ebfed-4a4a-4019-b8e4-a42ca0e4c180",
+						"exec": [
+							"// Todo delete item created",
+							"",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response Content-Type is JSON\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"pm.test(\"Todo item created successfully\", function () {",
+							"    pm.expect(pm.response.json().id).to.not.be.null;",
+							"});",
+							"",
+							"const reqUrl = pm.environment.get('url') + \"/todos/\" + pm.response.json().id;",
+							"",
+							"try {",
+							"    const responseDelete = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"DELETE\",",
+							"        header: {",
+							"        \"Content-Type\": \"application/json\", ",
+							"        \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"    console.log(responseDelete.json());",
+							"    ",
+							"    pm.test(\"Delete response code should be 200\", function () {",
+							"        pm.responseDelete.to.have.status(200);",
+							"    })",
+							"} catch (err) {",
+							"    //console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-31f099c7-7c3e-4058-beae-5613e68c8374",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test Title\",   \n    \"doneStatus\": false, \n    \"description\": \"JSON body\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos (415)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e4ebfed-4a4a-4019-b8e4-a42ca0e4c180",
+						"exec": [
+							"// Todo delete item created",
+							"",
+							"pm.test(\"Status code is 415\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});",
+							"",
+							"const reqUrl = pm.environment.get('url') + \"/todos\";",
+							"",
+							"try {",
+							"    const responseGet = await pm.sendRequest({",
+							"        url: reqUrl,",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\", ",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"",
+							"    console.log(responseGet.json());",
+							"    ",
+							"    pm.test(\"Test Todo item should not be added\", function () {",
+							"        const todosText = responseGet.text();",
+							"        pm.expect(todosText).to.not.include(\"Test 415 Title\");",
+							"    });",
+							"    ",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-63c3bab6-6ac2-46b2-a357-30631a4eeac0",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/octet-stream",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test 415 Title\",   \n    \"doneStatus\": false, \n    \"description\": \"JSON body\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /challenger/guid (existing X-CHALLENGER)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "59072476-c189-41c8-b703-7942a857aa87",
+						"exec": [
+							"pm.test(\"Response status code should be 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response should contain the correct X-Challenger header\", function () {",
+							"    pm.response.to.have.header(\"X-Challenger\");    ",
+							"    pm.expect(pm.response.headers.get(\"X-Challenger\")).to.eql(pm.collectionVariables.get(\"XChallenger\"));",
+							"});",
+							"",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response should contain the correct X-Challenger in response body\", function () {",
+							"    pm.expect(jsonData.xChallenger).to.eql(pm.collectionVariables.get(\"XChallenger\"));",
+							"});",
+							"",
+							"pm.collectionVariables.set(\"xAuthToken\", jsonData.xAuthToken);",
+							"console.log(\"xAuthToken\", pm.collectionVariables.get(\"xAuthToken\"));",
+							"",
+							"var prevJsonText =  pm.response.text()",
+							"pm.collectionVariables.set(\"prevData\", prevJsonText);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-9d5424fc-48fa-4eb2-b291-14b1c6a551cc",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/challenger/{{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger",
+						"{{XChallenger}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /challenger/guid RESTORE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c1c34a18-df97-4af6-9c28-05e34360b3c8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-b41825e4-88d7-4b2d-98ee-925c1771eb30",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{prevData}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/challenger/{{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger",
+						"{{XChallenger}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /challenger/guid CREATE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aa9dbec4-0b67-4f19-895d-687e1c3ba5c7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9a954b6f-e244-48cd-9578-321b9687761b",
+						"exec": [
+							"pm.variables.set(\"newGuid\", \"66665494-1cc2-4935-9a25-9b42c1247777\");",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-eb0d0dda-9b39-47ce-b64f-08a8959cb37a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"xAuthToken\":\"{{xAuthToken}}\",\"xChallenger\":{{XChallenger}},\"secretNote\":\"\",\"challengeStatus\":{\"PUT_RESTORABLE_CHALLENGER_PROGRESS_STATUS\":false,\"GET_TODOS\":true,\"PUT_NEW_RESTORED_CHALLENGER_PROGRESS_STATUS\":true,\"POST_TODOS\":true,\"OVERRIDE_PATCH_HEARTBEAT_500\":false,\"POST_TODOS_TOO_LONG_DESCRIPTION_LENGTH\":true,\"GET_RESTORABLE_CHALLENGER_PROGRESS_STATUS\":true,\"POST_SECRET_NOTE_401\":false,\"PUT_TODOS_PARTIAL_200\":true,\"GET_TODOS_FILTERED\":true,\"GET_TODO_404\":true,\"PUT_TODOS_400_NO_AMEND_ID\":true,\"GET_HEARTBEAT_204\":false,\"POST_TODOS_INVALID_EXTRA_FIELD\":true,\"POST_SECRET_NOTE_BEARER_200\":false,\"POST_CREATE_XML_ACCEPT_JSON\":false,\"GET_ACCEPT_XML_PREFERRED\":true,\"POST_SECRET_NOTE_200\":false,\"CREATE_NEW_CHALLENGER\":true,\"POST_UPDATE_TODO\":true,\"GET_CHALLENGES\":true,\"GET_HEAD_TODOS\":true,\"POST_SECRET_NOTE_403\":false,\"GET_RESTORABLE_TODOS\":false,\"GET_ACCEPT_XML\":true,\"POST_TODOS_415\":true,\"GET_ACCEPT_JSON\":true,\"CREATE_SECRET_TOKEN_201\":false,\"OVERRIDE_DELETE_HEARTBEAT_405\":false,\"POST_TODOS_BAD_DONE_STATUS\":true,\"GET_SECRET_NOTE_200\":false,\"OVERRIDE_TRACE_HEARTBEAT_501\":false,\"POST_TODOS_404\":true,\"POST_CREATE_JSON_ACCEPT_XML\":false,\"GET_SECRET_NOTE_BEARER_200\":false,\"GET_TODO\":true,\"PUT_TODOS_FULL_200\":true,\"GET_ACCEPT_ANY_DEFAULT_JSON\":true,\"GET_SECRET_NOTE_401\":false,\"POST_MAX_OUT_TITLE_DESCRIPTION_LENGTH\":true,\"POST_CREATE_JSON\":true,\"PATCH_HEARTBEAT_500\":false,\"DELETE_A_TODO\":true,\"DELETE_ALL_TODOS\":false,\"POST_TODOS_TOO_LONG_PAYLOAD_SIZE\":true,\"TRACE_HEARTBEAT_501\":false,\"DELETE_HEARTBEAT_405\":false,\"POST_ALL_TODOS\":false,\"GET_SECRET_NOTE_403\":false,\"PUT_TODOS_MISSING_TITLE_400\":true,\"OPTIONS_TODOS\":true,\"GET_JSON_BY_DEFAULT_NO_ACCEPT\":true,\"POST_TODOS_TOO_LONG_TITLE_LENGTH\":true,\"PUT_RESTORABLE_TODOS\":false,\"GET_TODOS_NOT_PLURAL_404\":true,\"POST_CREATE_XML\":true,\"CREATE_SECRET_TOKEN_401\":false,\"PUT_TODOS_400\":true,\"GET_UNSUPPORTED_ACCEPT_406\":true}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/challenger/{{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger",
+						"{{XChallenger}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /challenger/database/guid (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fd1d3d46-a96d-4955-80dc-92bee8b82f3a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-50556b8d-6d36-4fca-a11a-fc4e603f6aa7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/challenger/database/{{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger",
+						"database",
+						"{{XChallenger}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /challenger/database/guid (Update)",
+			"id": "26868945-8f5bdf23-7aed-467b-85a3-a2bf90b71dda",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"todos\": [\n        {\n            \"id\": 5,\n            \"title\": \"pay bills\"\n        },\n        {\n            \"id\": 1,\n            \"title\": \"scan paperwork\"\n        },\n        {\n            \"id\": 7,\n            \"title\": \"train staff\"\n        },\n        {\n            \"id\": 10,\n            \"title\": \"install webcam\"\n        },\n        {\n            \"id\": 8,\n            \"title\": \"schedule meeting\"\n        },\n        {\n            \"id\": 2,\n            \"title\": \"file paperwork\"\n        },\n        {\n            \"id\": 6,\n            \"title\": \"process payroll\"\n        },\n        {\n            \"id\": 4,\n            \"title\": \"escalate late payments\"\n        },\n        {\n            \"id\": 9,\n            \"title\": \"tidy meeting room\"\n        },\n        {\n            \"id\": 3,\n            \"title\": \"Partial Update Todo\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/challenger/database/{{XChallenger}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"challenger",
+						"database",
+						"{{XChallenger}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos XML to JSON",
+			"id": "26868945-9fb0afe5-8186-4215-b0e3-2fa12bee169e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<todo>\n    <title>XML to JSON</title>\n    <doneStatus>false</doneStatus>\n    <description>learn by doing</description>\n</todo>\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos JSON to XML",
+			"id": "26868945-5f696c57-a58b-4738-a79d-434c76a8c420",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"JSON to XML 2\",\n    \"doneStatus\": false,\n    \"description\": \"learn by doing\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /heartbeat (405)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe3f4800-482a-4317-8d31-feb7f714b746",
+						"exec": [
+							"pm.test(\"Status code is 405\", function () {",
+							"    pm.response.to.have.status(405); // Method Not Allowed",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1c095c30-02de-451f-b4d3-e0b626977cf1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH /heartbeat (500)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d78da5b-c902-46db-b292-162dea0a899c",
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-c5c61f7b-e4ed-4f60-b7a2-138795ce978d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Some title for Patch\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TRACE /heartbeat (501)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "632f97b5-b566-43b5-afeb-345d0bb007dd",
+						"exec": [
+							"pm.test(\"Status code is 501\", function () {",
+							"    pm.response.to.have.status(501); // 501 Not Implemented",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-a487917c-702f-418e-a7ef-7444810a5005",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "TRACE",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /heartbeat (204)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "632f97b5-b566-43b5-afeb-345d0bb007dd",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204); // 501 Not Implemented",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-0a60c86c-df0f-4e0b-aefe-cef6f08c4e7b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /heartbeat as DELETE (405)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adbf7206-12b0-4c51-b053-17455bef653a",
+						"exec": [
+							"pm.test(\"Status code is 405\", function () {",
+							"    pm.response.to.have.status(405);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-54e6b868-0ffc-48d9-8b54-277ee4e21c70",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-HTTP-Method-Override",
+						"value": "DELETE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /heartbeat as PATCH (500)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adbf7206-12b0-4c51-b053-17455bef653a",
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1161602b-67c5-4afe-a2ef-a43e16726d81",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-HTTP-Method-Override",
+						"value": "PATCH",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /heartbeat as Trace (501)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adbf7206-12b0-4c51-b053-17455bef653a",
+						"exec": [
+							"pm.test(\"Status code is 501\", function () {",
+							"    pm.response.to.have.status(501);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1935013d-8455-499b-8940-4d9718eaf6f8",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-HTTP-Method-Override",
+						"value": "TRACE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/heartbeat",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/token (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c69cfb05-785e-4bfd-b7b6-c0c44e92b77e",
+						"exec": [
+							"pm.test(\"Status code is 401\", function() {",
+							"    pm.response.to.have.status(401);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-6c2efdfb-b08c-46cb-87fe-6402cd34e635",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46cGFzc29yZA==",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/token (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c69cfb05-785e-4bfd-b7b6-c0c44e92b77e",
+						"exec": [
+							"pm.test(\"Status code is 201\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1c633dd2-0b78-470e-9a44-d190dd0e4c4b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46cGFzc3dvcmQ=",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /secret/note (403)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40416a5e-c90b-4587-b266-767a66013c12",
+						"exec": [
+							"pm.test(\"Status code is 403\", function() {",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-bdba9496-5b5e-4a7e-92b8-8859798c36ca",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "123",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /secret/note (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de258099-7d27-4399-9b48-cb2021472d9c",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-827417e0-fc71-4f14-8cc6-bf01d4cd37ee",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /secret/note (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de258099-7d27-4399-9b48-cb2021472d9c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-d98b844d-68d2-4f7b-bc0c-b91c613bb6d2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{xAuthToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/note (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80580ea1-7199-4855-8524-4d89a23a0287",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function (){",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response body contains note\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"my note hahha\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-cc21c05f-18a8-47d9-aea4-f6136e55e168",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{xAuthToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"note\":\"my note hahha\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/note (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80580ea1-7199-4855-8524-4d89a23a0287",
+						"exec": [
+							"pm.test(\"Response status code is 401\", function (){",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-1bd7f891-2e2d-4817-a0dc-2542823f0f91",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{xAuthToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"note\":\"my note hahha\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/note (403)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80580ea1-7199-4855-8524-4d89a23a0287",
+						"exec": [
+							"pm.test(\"Response status code is 403\", function (){",
+							"    pm.response.to.have.status(403)",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-2e1bf138-2026-41eb-a8d4-e5563a81ebdf",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "123",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"note\":\"my note hahha\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /secret/note (200) Bearer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de258099-7d27-4399-9b48-cb2021472d9c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body should vontain note\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"note\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-07b801e3-b8d3-42a9-8607-110391df81f3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{xAuthToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /secret/note (200) Bearer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de258099-7d27-4399-9b48-cb2021472d9c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body should vontain note\", function() {",
+							"    pm.expect(pm.response.text()).to.include(\"my note\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-3942821c-ca36-4f55-a439-36d225de930d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{xAuthToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"note\":\"my note\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/secret/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /todos/{id} (200) all",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d0d5f0f2-3a4a-49ce-b497-0795ecb46f12",
+						"exec": [
+							"// get all todos",
+							"try {",
+							"    const response = await pm.sendRequest({",
+							"        url: pm.environment.get(\"url\") + \"/todos\",",
+							"        method: \"GET\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\", ",
+							"            \"X-Challenger\": pm.collectionVariables.get('XChallenger')",
+							"        }",
+							"    });",
+							"",
+							"    var results = []; // Array to store results for each requestconst results[];",
+							"    var responseData = response.json();",
+							"    console.log(responseData);",
+							"    pm.variables.set(\"responseD\", responseData);",
+							"    console.log(\"GET:\", pm.variables.get(\"responseD\"))",
+							"    console.log(responseData);",
+							"    //loop throug and get IDs and send DELTE for each ID",
+							"    responseData.todos.forEach(function (todo) {",
+							"        var id = todo.id;",
+							"        const requestConfig = {",
+							"            url: pm.environment.get(\"url\")+ \"/todos/\" + id,",
+							"            method: \"DELETE\",",
+							"            header: { ",
+							"                \"Content-Type\": \"application/json\",",
+							"                \"X-Challenger\": pm.collectionVariables.get(\"XChallenger\")",
+							"            }",
+							"        }",
+							"        //DELETE todos",
+							"        pm.sendRequest(requestConfig, (err, res) => {",
+							"            if (err) {",
+							"                console.error(`Error for ID ${id}:`, err);",
+							"                results.push({ id, error: err });",
+							"            } else {",
+							"                console.log(`Response for ID ${id}:`, res.json());",
+							"                results.push({ id, response: res.json() });",
+							"            }",
+							"            // Optional: save last response in collection variable",
+							"            pm.collectionVariables.set(\"lastResponse\", JSON.stringify(results));",
+							"        });",
+							"    });",
+							"} catch (err) {",
+							"    console.error(err);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f67978b0-04f4-4cee-af5c-2f698a63da7e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const responseData = pm.variables.get(\"responseD\")",
+							"console.log(\"AFTER\", responseData)",
+							"pm.test(\"Todos list was not empty before deletion\", function () {",
+							"    pm.expect(responseData.todos).to.have.length.above(0);",
+							"});",
+							"",
+							"pm.test(\"Todos array should be empty after deleting all todos\", function () {",
+							"    pm.expect(pm.response.json().todos).to.have.lengthOf(0);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-7f75acba-8de4-4740-827d-c1eda3e377c5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /todos (201) all",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6754a6cc-99c5-4400-8c2c-97b688f46e63",
+						"exec": [
+							"",
+							"//get todoCount",
+							"",
+							"let num = 1;",
+							"while (num <= 20) { ",
+							"    try {",
+							"        const response = await pm.sendRequest({",
+							"            url: pm.environment.get(\"url\") + \"/todos\",",
+							"            method: \"POST\",",
+							"            header: { ",
+							"                \"Content-Type\": \"application/json\",",
+							"                \"X-Challenger\": pm.collectionVariables.get(\"XChallenger\")",
+							"            },",
+							"            body: {",
+							"                mode: \"raw\",",
+							"                raw: JSON.stringify({  ",
+							"                    \"title\": \"TODO\" + num,   ",
+							"                    \"doneStatus\": false, ",
+							"                    \"description\": \"JSON body\"})",
+							"            }",
+							"        }, function (err, res) {",
+							"            pm.test(\"Status code should be 201\", function() {",
+							"                pm.expect(res.code).to.eql(201);",
+							"            });",
+							"        });",
+							"        ",
+							"    console.log(response.json());",
+							"        ",
+							"    } catch (err) {",
+							"        console.error(err);",
+							"    }",
+							"    num++; ",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f29028a3-7757-4394-937f-99b8f46fe2c2",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response payload should contain valid error message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errorMessages).to.include(\"ERROR: Cannot add instance, maximum limit of 20 reached\");",
+							"    });",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "26868945-075390bb-e371-40b9-941b-ef0242274ff5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{XChallenger}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"TODO final\",\n    \"doneStatus\": false,\n    \"description\": \"JSON body\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todos",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9df5ca3f-bee1-4d29-b8ee-d1bc74197ee6",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ed36ab9e-a72a-438b-a57f-0f2c530ba386",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "XChallenger",
+			"value": ""
+		},
+		{
+			"key": "responseIds",
+			"value": ""
+		},
+		{
+			"key": "validId",
+			"value": ""
+		},
+		{
+			"key": "noId",
+			"value": ""
+		},
+		{
+			"key": "numberOfTodos",
+			"value": ""
+		},
+		{
+			"key": "prevXChallenger",
+			"value": "",
+			"disabled": true
+		},
+		{
+			"key": "prevData",
+			"value": ""
+		},
+		{
+			"key": "xAuthToken",
+			"value": ""
+		},
+		{
+			"key": "lastResponse",
+			"value": ""
+		}
+	]
+}
